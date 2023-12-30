@@ -1,6 +1,9 @@
 name: Build Binaries
 
 on:
+  push:
+    branches:
+      - 'traefik1-refresh'
   label:
     types:
       - created
