@@ -2,6 +2,7 @@ package provider
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 	"strings"
 	"text/template"
@@ -9,18 +10,19 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/Masterminds/sprig"
-	"github.com/traefik/traefik/autogen/gentemplates"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/autogen/gentemplates"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 // Provider defines methods of a provider.
 type Provider interface {
 	// Provide allows the provider to provide configurations to traefik
 	// using the given configuration channel.
-	Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error
-	Init(constraints types.Constraints) error
+	Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error
+	Init(ctx context.Context, constraints types.Constraints) error
 }
 
 // BaseProvider should be inherited by providers

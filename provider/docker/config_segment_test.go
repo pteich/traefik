@@ -7,10 +7,10 @@ import (
 	"github.com/containous/flaeg"
 	docker "github.com/docker/docker/api/types"
 	"github.com/docker/go-connections/nat"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/types"
 )
 
 func TestSegmentBuildConfiguration(t *testing.T) {

@@ -9,8 +9,8 @@ import (
 	"unicode/utf8"
 
 	gokitmetrics "github.com/go-kit/kit/metrics"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/metrics"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/metrics"
 	"github.com/urfave/negroni"
 )
 

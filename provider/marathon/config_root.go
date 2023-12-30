@@ -2,7 +2,7 @@ package marathon
 
 import (
 	"github.com/gambol99/go-marathon"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/types"
 )
 
 func (p *Provider) buildConfiguration(applications *marathon.Applications) *types.Configuration {

@@ -12,9 +12,9 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/go-check/check"
-	"github.com/traefik/traefik/integration/try"
-	traefiktls "github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/integration/try"
+	traefiktls "github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 	checker "github.com/vdemeester/shakers"
 )
 

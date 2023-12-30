@@ -11,9 +11,9 @@ import (
 	"github.com/go-kit/kit/metrics"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 const (

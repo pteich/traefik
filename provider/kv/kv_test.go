@@ -1,11 +1,13 @@
 package kv
 
 import (
+	"context"
 	"testing"
 	"time"
 
-	"github.com/abronan/valkeyrie/store"
-	"github.com/traefik/traefik/types"
+	"github.com/kvtools/valkeyrie/store"
+
+	"github.com/pteich/traefik/types"
 )
 
 func TestKvWatchTree(t *testing.T) {
@@ -22,7 +24,7 @@ func TestKvWatchTree(t *testing.T) {
 
 	configChan := make(chan types.ConfigMessage)
 	go func() {
-		provider.watchKv(configChan, "prefix", make(chan bool, 1))
+		provider.watchKv(context.Background(), configChan, "prefix", make(chan bool, 1))
 	}()
 
 	select {

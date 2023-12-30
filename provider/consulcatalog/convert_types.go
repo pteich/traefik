@@ -3,7 +3,7 @@ package consulcatalog
 import (
 	"strings"
 
-	"github.com/traefik/traefik/provider/label"
+	"github.com/pteich/traefik/provider/label"
 )
 
 func tagsToNeutralLabels(tags []string, prefix string) map[string]string {

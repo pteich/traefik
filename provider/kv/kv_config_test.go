@@ -1,18 +1,21 @@
 package kv
 
 import (
+	"errors"
 	"sort"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/abronan/valkeyrie/store"
 	"github.com/containous/flaeg"
+	"github.com/kvtools/etcdv3"
+	"github.com/kvtools/valkeyrie/store"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 )
 
 func aKVPair(key string, value string) *store.KVPair {
@@ -616,7 +619,7 @@ func TestProviderListShouldPanic(t *testing.T) {
 	}{
 		{
 			desc:    "Should panic on an unexpected error",
-			kvError: store.ErrBackendNotSupported,
+			kvError: errors.New("store not supported"),
 			panic:   true,
 		},
 		{
@@ -730,7 +733,7 @@ func TestProviderGetShouldPanic(t *testing.T) {
 	}{
 		{
 			desc:    "Should panic on an unexpected error",
-			kvError: store.ErrBackendNotSupported,
+			kvError: errors.New("store not supported"),
 			panic:   true,
 		},
 		{
@@ -766,7 +769,7 @@ func TestProviderGet(t *testing.T) {
 	testCases := []struct {
 		desc         string
 		kvPairs      []*store.KVPair
-		storeType    store.Backend
+		storeType    string
 		keyParts     []string
 		defaultValue string
 		kvError      error
@@ -818,7 +821,7 @@ func TestProviderGet(t *testing.T) {
 		},
 		{
 			desc:      "when several parts key starts with /, ETCD v2",
-			storeType: store.ETCD,
+			storeType: etcdv3.StoreName,
 			kvPairs: []*store.KVPair{
 				aKVPair("foo/baz/1", "bar1"),
 				aKVPair("foo/baz/2", "bar2"),

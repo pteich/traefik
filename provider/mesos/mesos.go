@@ -1,19 +1,21 @@
 package mesos
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/mesos/mesos-go/detector"
 	"github.com/mesosphere/mesos-dns/records"
 	"github.com/mesosphere/mesos-dns/records/state"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 
 	// Register mesos zoo the detector
 	_ "github.com/mesos/mesos-go/detector/zoo"
@@ -39,13 +41,13 @@ type Provider struct {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
 // Provide allows the mesos provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	operation := func() error {
 
 		// initialize logging

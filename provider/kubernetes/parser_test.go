@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -17,9 +17,10 @@ import (
 // MustEncodeYaml Encode object to YAML.
 //
 // ex:
-// 	MustEncodeYaml(ingresses[0], "extensions/v1beta1", "ingress.yml")
-// 	MustEncodeYaml(services[0], "v1", "service.yml")
-// 	MustEncodeYaml(endpoints[0], "v1", "endpoint.yml")
+//
+//	MustEncodeYaml(ingresses[0], "extensions/v1beta1", "ingress.yml")
+//	MustEncodeYaml(services[0], "v1", "service.yml")
+//	MustEncodeYaml(endpoints[0], "v1", "endpoint.yml")
 func MustEncodeYaml(object runtime.Object, groupName string, w io.Writer) {
 	info, ok := runtime.SerializerInfoForMediaType(scheme.Codecs.SupportedMediaTypes(), "application/yaml")
 	if !ok {

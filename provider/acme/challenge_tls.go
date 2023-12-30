@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-acme/lego/v4/challenge"
 	"github.com/go-acme/lego/v4/challenge/tlsalpn01"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/types"
 )
 
 var _ challenge.Provider = (*challengeTLSALPN)(nil)

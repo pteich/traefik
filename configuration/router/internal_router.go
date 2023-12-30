@@ -2,12 +2,12 @@ package router
 
 import (
 	"github.com/containous/mux"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/metrics"
-	"github.com/traefik/traefik/middlewares"
-	mauth "github.com/traefik/traefik/middlewares/auth"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/metrics"
+	"github.com/pteich/traefik/middlewares"
+	mauth "github.com/pteich/traefik/middlewares/auth"
+	"github.com/pteich/traefik/types"
 	"github.com/urfave/negroni"
 )
 

@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/mesosphere/mesos-dns/records/state"
+	"github.com/pteich/traefik/provider/label"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/provider/label"
 )
 
 // test helpers

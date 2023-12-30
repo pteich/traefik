@@ -1,19 +1,21 @@
 package kv
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
 	"time"
 
-	"github.com/abronan/valkeyrie"
-	"github.com/abronan/valkeyrie/store"
-	"github.com/cenk/backoff"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+	"github.com/cenkalti/backoff/v4"
+	"github.com/kvtools/valkeyrie"
+	"github.com/kvtools/valkeyrie/store"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 // Provider holds common configurations of key-value providers.
@@ -24,27 +26,13 @@ type Provider struct {
 	TLS                   *types.ClientTLS `description:"Enable TLS support" export:"true"`
 	Username              string           `description:"KV Username"`
 	Password              string           `description:"KV Password"`
-	storeType             store.Backend
+	storeType             string
 	kvClient              store.Store
 }
 
 // CreateStore create the K/V store
-func (p *Provider) CreateStore() (store.Store, error) {
-	storeConfig := &store.Config{
-		ConnectionTimeout: 30 * time.Second,
-		Bucket:            "traefik",
-		Username:          p.Username,
-		Password:          p.Password,
-	}
-
-	if p.TLS != nil {
-		var err error
-		storeConfig.TLS, err = p.TLS.CreateTLSConfig()
-		if err != nil {
-			return nil, err
-		}
-	}
-	return valkeyrie.NewStore(
+func (p *Provider) CreateStore(ctx context.Context, storeConfig any) (store.Store, error) {
+	return valkeyrie.NewStore(ctx,
 		p.storeType,
 		strings.Split(p.Endpoint, ","),
 		storeConfig,
@@ -52,7 +40,7 @@ func (p *Provider) CreateStore() (store.Store, error) {
 }
 
 // SetStoreType storeType setter
-func (p *Provider) SetStoreType(storeType store.Backend) {
+func (p *Provider) SetStoreType(storeType string) {
 	p.storeType = storeType
 }
 
@@ -61,9 +49,12 @@ func (p *Provider) SetKVClient(kvClient store.Store) {
 	p.kvClient = kvClient
 }
 
-func (p *Provider) watchKv(configurationChan chan<- types.ConfigMessage, prefix string, stop chan bool) error {
+func (p *Provider) watchKv(ctx context.Context, configurationChan chan<- types.ConfigMessage, prefix string, stop chan bool) error {
+	wtCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	operation := func() error {
-		events, err := p.kvClient.WatchTree(p.Prefix, make(chan struct{}), nil)
+		events, err := p.kvClient.WatchTree(wtCtx, p.Prefix, nil)
 		if err != nil {
 			return fmt.Errorf("failed to KV WatchTree: %v", err)
 		}
@@ -82,7 +73,7 @@ func (p *Provider) watchKv(configurationChan chan<- types.ConfigMessage, prefix 
 
 				if configuration != nil {
 					configurationChan <- types.ConfigMessage{
-						ProviderName:  string(p.storeType),
+						ProviderName:  p.storeType,
 						Configuration: configuration,
 					}
 				}
@@ -101,14 +92,14 @@ func (p *Provider) watchKv(configurationChan chan<- types.ConfigMessage, prefix 
 }
 
 // Provide provides the configuration to traefik via the configuration channel
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	operation := func() error {
-		if _, err := p.kvClient.Exists(p.Prefix+"/qmslkjdfmqlskdjfmqlksjazçueznbvbwzlkajzebvkwjdcqmlsfj", nil); err != nil {
+		if _, err := p.kvClient.Exists(ctx, p.Prefix+"/qmslkjdfmqlskdjfmqlksjazçueznbvbwzlkajzebvkwjdcqmlsfj", nil); err != nil {
 			return fmt.Errorf("failed to test KV store connection: %v", err)
 		}
 		if p.Watch {
 			pool.Go(func(stop chan bool) {
-				err := p.watchKv(configurationChan, p.Prefix, stop)
+				err := p.watchKv(ctx, configurationChan, p.Prefix, stop)
 				if err != nil {
 					log.Errorf("Cannot watch KV store: %v", err)
 				}

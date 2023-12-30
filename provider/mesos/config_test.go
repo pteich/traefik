@@ -6,10 +6,10 @@ import (
 
 	"github.com/containous/flaeg"
 	"github.com/mesosphere/mesos-dns/records/state"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/types"
 )
 
 func TestBuildConfiguration(t *testing.T) {

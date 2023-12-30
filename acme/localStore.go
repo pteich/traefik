@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider/acme"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider/acme"
 )
 
 // LocalStore is a store using a file as storage

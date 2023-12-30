@@ -11,33 +11,34 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/flaeg"
-	"github.com/containous/staert"
 	"github.com/coreos/go-systemd/daemon"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/ogier/pflag"
+	"github.com/pteich/staert"
 	"github.com/sirupsen/logrus"
-	"github.com/traefik/traefik/autogen/genstatic"
-	"github.com/traefik/traefik/cmd"
-	"github.com/traefik/traefik/cmd/bug"
-	"github.com/traefik/traefik/cmd/healthcheck"
-	"github.com/traefik/traefik/cmd/storeconfig"
-	cmdVersion "github.com/traefik/traefik/cmd/version"
-	"github.com/traefik/traefik/collector"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/configuration/router"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider/ecs"
-	"github.com/traefik/traefik/provider/kubernetes"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/server"
-	"github.com/traefik/traefik/server/uuid"
-	traefiktls "github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
-	"github.com/traefik/traefik/version"
 	"github.com/vulcand/oxy/roundrobin"
+
+	"github.com/pteich/traefik/autogen/genstatic"
+	"github.com/pteich/traefik/cmd"
+	"github.com/pteich/traefik/cmd/bug"
+	"github.com/pteich/traefik/cmd/healthcheck"
+	"github.com/pteich/traefik/cmd/storeconfig"
+	cmdVersion "github.com/pteich/traefik/cmd/version"
+	"github.com/pteich/traefik/collector"
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/configuration/router"
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider/ecs"
+	"github.com/pteich/traefik/provider/kubernetes"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/server"
+	"github.com/pteich/traefik/server/uuid"
+	traefiktls "github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
+	"github.com/pteich/traefik/version"
 )
 
 func main() {
@@ -151,6 +152,9 @@ Complete documentation is available at https://traefik.io`,
 }
 
 func runCmd(globalConfiguration *configuration.GlobalConfiguration, configFile string) {
+	ctx, cancel := cmd.ContextWithSignal(context.Background())
+	defer cancel()
+
 	configureLogging(globalConfiguration)
 
 	if len(configFile) > 0 {
@@ -186,13 +190,13 @@ func runCmd(globalConfiguration *configuration.GlobalConfiguration, configFile s
 
 	stats(globalConfiguration)
 
-	providerAggregator := configuration.NewProviderAggregator(globalConfiguration)
+	providerAggregator := configuration.NewProviderAggregator(ctx, globalConfiguration)
 
 	acmeprovider, err := globalConfiguration.InitACMEProvider()
 	if err != nil {
 		log.Errorf("Unable to initialize ACME provider: %v", err)
 	} else if acmeprovider != nil {
-		err = providerAggregator.AddProvider(acmeprovider)
+		err = providerAggregator.AddProvider(ctx, acmeprovider)
 		if err != nil {
 			log.Errorf("Unable to add ACME provider to the providers list: %v", err)
 			acmeprovider = nil
@@ -237,7 +241,6 @@ func runCmd(globalConfiguration *configuration.GlobalConfiguration, configFile s
 		acmeprovider.SetConfigListenerChan(make(chan types.Configuration))
 		svr.AddListener(acmeprovider.ListenConfiguration)
 	}
-	ctx := cmd.ContextWithSignal(context.Background())
 
 	if globalConfiguration.Ping != nil {
 		globalConfiguration.Ping.WithContext(ctx)

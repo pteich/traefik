@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 )
 
 // EntryPoint holds an entry point configuration of the reverse proxy (ip, port, TLS...)

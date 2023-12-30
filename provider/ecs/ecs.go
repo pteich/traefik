@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -13,13 +14,14 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecs"
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/patrickmn/go-cache"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 var _ provider.Provider = (*Provider)(nil)
@@ -70,7 +72,7 @@ type awsClient struct {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
@@ -120,16 +122,16 @@ func (p *Provider) createClient() (*awsClient, error) {
 
 // Provide allows the ecs provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	handleCanceled := func(ctx context.Context, err error) error {
-		if ctx.Err() == context.Canceled || err == context.Canceled {
+		if errors.Is(ctx.Err(), context.Canceled) || errors.Is(err, context.Canceled) {
 			return nil
 		}
 		return err
 	}
 
 	pool.Go(func(stop chan bool) {
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(ctx)
 		safe.Go(func() {
 			<-stop
 			cancel()
@@ -436,7 +438,7 @@ func (p *Provider) loadECSConfig(ctx context.Context, client *awsClient) (*types
 	return p.buildConfiguration(instances)
 }
 
-// chunkIDs ECS expects no more than 100 parameters be passed to a API call;
+// chunkIDs ECS expects no more than 100 parameters be passed to an API call;
 // thus, pack each string into an array capped at 100 elements
 func (p *Provider) chunkIDs(ids []*string) [][]*string {
 	var chuncked [][]*string

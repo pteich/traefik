@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/go-check/check"
-	"github.com/traefik/traefik/integration/helloworld"
-	"github.com/traefik/traefik/integration/try"
+	"github.com/pteich/traefik/integration/helloworld"
+	"github.com/pteich/traefik/integration/try"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 var (

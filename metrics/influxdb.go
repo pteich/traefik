@@ -11,9 +11,9 @@ import (
 	kitlog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/metrics/influx"
 	influxdb "github.com/influxdata/influxdb1-client/v2"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 var influxDBClient *influx.Influx

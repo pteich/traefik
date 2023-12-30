@@ -8,8 +8,8 @@ import (
 
 	"github.com/gambol99/go-marathon"
 	"github.com/go-check/check"
-	"github.com/traefik/traefik/integration/try"
-	"github.com/traefik/traefik/provider/label"
+	"github.com/pteich/traefik/integration/try"
+	"github.com/pteich/traefik/provider/label"
 	checker "github.com/vdemeester/shakers"
 )
 

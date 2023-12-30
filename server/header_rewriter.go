@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/whitelist"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/whitelist"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/utils"
 )

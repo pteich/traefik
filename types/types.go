@@ -11,13 +11,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/abronan/valkeyrie/store"
 	"github.com/containous/flaeg"
 	"github.com/containous/mux"
+	"github.com/kvtools/valkeyrie/store"
 	"github.com/mitchellh/hashstructure"
 	"github.com/ryanuber/go-glob"
-	"github.com/traefik/traefik/log"
-	traefiktls "github.com/traefik/traefik/tls"
+
+	"github.com/pteich/traefik/log"
+	traefiktls "github.com/pteich/traefik/tls"
 )
 
 // Backend holds backend configuration.

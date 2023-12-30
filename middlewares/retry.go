@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/http/httptrace"
 
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 // Compile time validation that the response writer implements http interfaces correctly.

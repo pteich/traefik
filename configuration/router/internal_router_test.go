@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/containous/mux"
+	"github.com/pteich/traefik/acme"
+	"github.com/pteich/traefik/api"
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/ping"
+	acmeprovider "github.com/pteich/traefik/provider/acme"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/acme"
-	"github.com/traefik/traefik/api"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/ping"
-	acmeprovider "github.com/traefik/traefik/provider/acme"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
 	"github.com/urfave/negroni"
 )
 

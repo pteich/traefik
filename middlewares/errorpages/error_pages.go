@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/middlewares"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/middlewares"
+	"github.com/pteich/traefik/types"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/utils"
 )

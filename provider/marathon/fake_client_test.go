@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/gambol99/go-marathon"
+	"github.com/pteich/traefik/provider/marathon/mocks"
 	"github.com/stretchr/testify/mock"
-	"github.com/traefik/traefik/provider/marathon/mocks"
 )
 
 type fakeClient struct {

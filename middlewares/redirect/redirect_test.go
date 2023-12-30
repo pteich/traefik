@@ -5,11 +5,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/testhelpers"
+	"github.com/pteich/traefik/tls"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/testhelpers"
-	"github.com/traefik/traefik/tls"
 )
 
 func TestNewEntryPointHandler(t *testing.T) {

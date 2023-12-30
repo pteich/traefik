@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
@@ -13,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/flaeg"
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge"
@@ -23,12 +24,13 @@ import (
 	"github.com/go-acme/lego/v4/providers/dns"
 	"github.com/go-acme/lego/v4/registration"
 	"github.com/sirupsen/logrus"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/rules"
-	"github.com/traefik/traefik/safe"
-	traefiktls "github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
-	"github.com/traefik/traefik/version"
+
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/rules"
+	"github.com/pteich/traefik/safe"
+	traefiktls "github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
+	"github.com/pteich/traefik/version"
 )
 
 var (
@@ -123,7 +125,7 @@ func (p *Provider) ListenRequest(domain string) (*tls.Certificate, error) {
 }
 
 // Init for compatibility reason the BaseProvider implements an empty Init
-func (p *Provider) Init(_ types.Constraints) error {
+func (p *Provider) Init(_ context.Context, _ types.Constraints) error {
 	if p.ACMELogging {
 		legolog.Logger = fmtlog.New(log.WriterLevel(logrus.InfoLevel), "legolog: ", 0)
 	} else {
@@ -173,7 +175,7 @@ func isAccountMatchingCaServer(accountURI string, serverURI string) bool {
 
 // Provide allows the file provider to provide configurations to traefik
 // using the given Configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	p.pool = pool
 
 	p.watchCertificate()

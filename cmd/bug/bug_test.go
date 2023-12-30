@@ -3,13 +3,13 @@ package bug
 import (
 	"testing"
 
+	"github.com/pteich/traefik/anonymize"
+	"github.com/pteich/traefik/cmd"
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/provider/file"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/anonymize"
-	"github.com/traefik/traefik/cmd"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/provider/file"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
 )
 
 func Test_createReport(t *testing.T) {

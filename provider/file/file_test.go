@@ -11,8 +11,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 // createRandomFile Helper
@@ -199,7 +200,7 @@ func TestProvideWithoutWatch(t *testing.T) {
 			configChan := make(chan types.ConfigMessage)
 
 			go func() {
-				err := provider.Provide(configChan, safe.NewPool(context.Background()))
+				err := provider.Provide(context.Background(), configChan, safe.NewPool(context.Background()))
 				assert.NoError(t, err)
 			}()
 
@@ -227,7 +228,7 @@ func TestProvideWithWatch(t *testing.T) {
 			configChan := make(chan types.ConfigMessage)
 
 			go func() {
-				err := provider.Provide(configChan, safe.NewPool(context.Background()))
+				err := provider.Provide(context.Background(), configChan, safe.NewPool(context.Background()))
 				assert.NoError(t, err)
 			}()
 
@@ -282,7 +283,7 @@ func TestErrorWhenEmptyConfig(t *testing.T) {
 	configChan := make(chan types.ConfigMessage)
 	errorChan := make(chan struct{})
 	go func() {
-		err := provider.Provide(configChan, safe.NewPool(context.Background()))
+		err := provider.Provide(context.Background(), configChan, safe.NewPool(context.Background()))
 		assert.Error(t, err)
 		close(errorChan)
 	}()

@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/docker/go-connections/nat"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/provider/label"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/provider/label"
 )
 
 // Specific functions

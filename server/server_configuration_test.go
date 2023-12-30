@@ -10,15 +10,15 @@ import (
 
 	"github.com/containous/flaeg"
 	"github.com/containous/mux"
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/healthcheck"
+	"github.com/pteich/traefik/middlewares"
+	"github.com/pteich/traefik/rules"
+	th "github.com/pteich/traefik/testhelpers"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/healthcheck"
-	"github.com/traefik/traefik/middlewares"
-	"github.com/traefik/traefik/rules"
-	th "github.com/traefik/traefik/testhelpers"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
 	"github.com/vulcand/oxy/roundrobin"
 )
 

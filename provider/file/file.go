@@ -1,6 +1,7 @@
 package file
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -10,12 +11,13 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
 	"gopkg.in/fsnotify.v1"
+
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 )
 
 var _ provider.Provider = (*Provider)(nil)
@@ -28,13 +30,13 @@ type Provider struct {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
 // Provide allows the file provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(_ context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	configuration, err := p.BuildConfiguration()
 
 	if err != nil {

@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/pem"
 	"errors"
 	"flag"
@@ -16,20 +17,21 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/flaeg"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 )
 
 var _ provider.Provider = (*Provider)(nil)
@@ -103,13 +105,13 @@ func (p *Provider) newK8sClient(ingressLabelSelector string) (Client, error) {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
 // Provide allows the k8s provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	// Tell glog (used by client-go) to log into STDERR. Otherwise, we risk
 	// certain kinds of API errors getting logged into a directory not
 	// available in a `FROM scratch` Docker container, causing glog to abort

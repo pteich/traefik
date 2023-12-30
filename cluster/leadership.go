@@ -5,13 +5,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/mux"
-	"github.com/docker/leadership"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/leadership"
 	"github.com/unrolled/render"
+
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 const clusterLeaderKeySuffix = "/leader"
@@ -75,7 +76,7 @@ func (l *Leadership) Resign() {
 }
 
 func (l *Leadership) run(ctx context.Context, candidate *leadership.Candidate) error {
-	electedCh, errCh := candidate.RunForElection()
+	electedCh, errCh := candidate.RunForElection(ctx)
 	for {
 		select {
 		case elected := <-electedCh:
@@ -114,7 +115,7 @@ type leaderResponse struct {
 
 func (l *Leadership) getLeaderHandler(response http.ResponseWriter, request *http.Request) {
 	leaderNode := ""
-	leaderKv, err := l.Cluster.Store.Get(l.Cluster.Store.Prefix+clusterLeaderKeySuffix, nil)
+	leaderKv, err := l.Cluster.Store.Get(context.TODO(), l.Cluster.Store.Prefix+clusterLeaderKeySuffix, nil)
 	if err != nil {
 		log.Error(err)
 	} else {

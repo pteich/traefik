@@ -1,12 +1,13 @@
 package rancher
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 const (
@@ -52,13 +53,13 @@ func (r rancherData) String() string {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
 // Provide allows either the Rancher API or metadata service provider to
 // seed configuration into Traefik using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	if p.Metadata == nil {
 		return p.apiProvide(configurationChan, pool)
 	}

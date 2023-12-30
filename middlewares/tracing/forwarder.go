@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/opentracing/opentracing-go/ext"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 	"github.com/urfave/negroni"
 )
 

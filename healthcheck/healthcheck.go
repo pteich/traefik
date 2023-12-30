@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/metrics"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
 	"github.com/vulcand/oxy/roundrobin"
 )
 

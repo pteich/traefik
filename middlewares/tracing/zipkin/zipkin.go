@@ -5,7 +5,7 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	zipkin "github.com/openzipkin-contrib/zipkin-go-opentracing"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 // Name sets the name of this tracer

@@ -9,10 +9,10 @@ import (
 	"time"
 
 	goauth "github.com/abbot/go-http-auth"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/middlewares/accesslog"
-	"github.com/traefik/traefik/middlewares/tracing"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/middlewares/accesslog"
+	"github.com/pteich/traefik/middlewares/tracing"
+	"github.com/pteich/traefik/types"
 	"github.com/urfave/negroni"
 )
 

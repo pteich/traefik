@@ -1,6 +1,7 @@
 package consulcatalog
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -9,14 +10,15 @@ import (
 	"time"
 
 	"github.com/BurntSushi/ty/fun"
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/hashicorp/consul/api"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 const (
@@ -97,7 +99,7 @@ func (a nodeSorter) Less(i int, j int) bool {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	err := p.BaseProvider.Init(constraints)
 	if err != nil {
 		return err
@@ -116,7 +118,7 @@ func (p *Provider) Init(constraints types.Constraints) error {
 
 // Provide allows the consul catalog provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	pool.Go(func(stop chan bool) {
 		notify := func(err error, time time.Duration) {
 			log.Errorf("Consul connection error %+v, retrying in %s", err, time)

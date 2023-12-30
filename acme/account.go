@@ -16,9 +16,9 @@ import (
 
 	"github.com/go-acme/lego/v4/certcrypto"
 	"github.com/go-acme/lego/v4/registration"
-	"github.com/traefik/traefik/log"
-	acmeprovider "github.com/traefik/traefik/provider/acme"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	acmeprovider "github.com/pteich/traefik/provider/acme"
+	"github.com/pteich/traefik/types"
 )
 
 // Account is used to store lets encrypt registration info

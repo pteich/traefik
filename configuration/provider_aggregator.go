@@ -1,12 +1,13 @@
 package configuration
 
 import (
+	"context"
 	"encoding/json"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 // ProviderAggregator aggregate providers
@@ -16,71 +17,71 @@ type ProviderAggregator struct {
 }
 
 // NewProviderAggregator return an aggregate of all the providers configured in GlobalConfiguration
-func NewProviderAggregator(gc *GlobalConfiguration) ProviderAggregator {
-	provider := ProviderAggregator{
+func NewProviderAggregator(ctx context.Context, gc *GlobalConfiguration) ProviderAggregator {
+	p := ProviderAggregator{
 		constraints: gc.Constraints,
 	}
 	if gc.Docker != nil {
-		provider.quietAddProvider(gc.Docker)
+		p.quietAddProvider(ctx, gc.Docker)
 	}
 	if gc.Marathon != nil {
-		provider.quietAddProvider(gc.Marathon)
+		p.quietAddProvider(ctx, gc.Marathon)
 	}
 	if gc.File != nil {
-		provider.quietAddProvider(gc.File)
+		p.quietAddProvider(ctx, gc.File)
 	}
 	if gc.Rest != nil {
-		provider.quietAddProvider(gc.Rest)
+		p.quietAddProvider(ctx, gc.Rest)
 	}
 	if gc.Consul != nil {
-		provider.quietAddProvider(gc.Consul)
+		p.quietAddProvider(ctx, gc.Consul)
 	}
 	if gc.ConsulCatalog != nil {
-		provider.quietAddProvider(gc.ConsulCatalog)
+		p.quietAddProvider(ctx, gc.ConsulCatalog)
 	}
 	if gc.Etcd != nil {
-		provider.quietAddProvider(gc.Etcd)
+		p.quietAddProvider(ctx, gc.Etcd)
 	}
 	if gc.Zookeeper != nil {
-		provider.quietAddProvider(gc.Zookeeper)
+		p.quietAddProvider(ctx, gc.Zookeeper)
 	}
 	if gc.Boltdb != nil {
-		provider.quietAddProvider(gc.Boltdb)
+		p.quietAddProvider(ctx, gc.Boltdb)
 	}
 	if gc.Kubernetes != nil {
-		provider.quietAddProvider(gc.Kubernetes)
+		p.quietAddProvider(ctx, gc.Kubernetes)
 	}
 	if gc.Mesos != nil {
-		provider.quietAddProvider(gc.Mesos)
+		p.quietAddProvider(ctx, gc.Mesos)
 	}
 	if gc.Eureka != nil {
-		provider.quietAddProvider(gc.Eureka)
+		p.quietAddProvider(ctx, gc.Eureka)
 	}
 	if gc.ECS != nil {
-		provider.quietAddProvider(gc.ECS)
+		p.quietAddProvider(ctx, gc.ECS)
 	}
 	if gc.Rancher != nil {
-		provider.quietAddProvider(gc.Rancher)
+		p.quietAddProvider(ctx, gc.Rancher)
 	}
 	if gc.DynamoDB != nil {
-		provider.quietAddProvider(gc.DynamoDB)
+		p.quietAddProvider(ctx, gc.DynamoDB)
 	}
 	if gc.ServiceFabric != nil {
-		provider.quietAddProvider(gc.ServiceFabric)
+		//p.quietAddProvider(gc.ServiceFabric)
 	}
-	return provider
+	return p
 }
 
-func (p *ProviderAggregator) quietAddProvider(provider provider.Provider) {
-	err := p.AddProvider(provider)
+func (p *ProviderAggregator) quietAddProvider(ctx context.Context, provider provider.Provider) {
+	err := p.AddProvider(ctx, provider)
 	if err != nil {
 		log.Errorf("Error initializing provider %T: %v", provider, err)
 	}
 }
 
 // AddProvider add a provider in the providers map
-func (p *ProviderAggregator) AddProvider(provider provider.Provider) error {
-	err := provider.Init(p.constraints)
+func (p *ProviderAggregator) AddProvider(ctx context.Context, provider provider.Provider) error {
+	err := provider.Init(ctx, p.constraints)
 	if err != nil {
 		return err
 	}
@@ -89,12 +90,12 @@ func (p *ProviderAggregator) AddProvider(provider provider.Provider) error {
 }
 
 // Init the provider
-func (p ProviderAggregator) Init(_ types.Constraints) error {
+func (p ProviderAggregator) Init(ctx context.Context, _ types.Constraints) error {
 	return nil
 }
 
 // Provide call the provide method of every providers
-func (p ProviderAggregator) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p ProviderAggregator) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	for _, p := range p.providers {
 		jsonConf, err := json.Marshal(p)
 		if err != nil {
@@ -103,7 +104,7 @@ func (p ProviderAggregator) Provide(configurationChan chan<- types.ConfigMessage
 		log.Infof("Starting provider %T %s", p, jsonConf)
 		currentProvider := p
 		safe.Go(func() {
-			err := currentProvider.Provide(configurationChan, pool)
+			err := currentProvider.Provide(ctx, configurationChan, pool)
 			if err != nil {
 				log.Errorf("Error starting provider %T: %v", p, err)
 			}

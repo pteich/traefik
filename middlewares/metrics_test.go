@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/go-kit/kit/metrics"
-	"github.com/traefik/traefik/testhelpers"
+	"github.com/pteich/traefik/testhelpers"
 )
 
 func TestMetricsRetryListener(t *testing.T) {

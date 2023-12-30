@@ -12,10 +12,10 @@ import (
 
 	"github.com/go-check/check"
 	"github.com/miekg/dns"
-	"github.com/traefik/traefik/integration/try"
-	"github.com/traefik/traefik/provider/acme"
-	"github.com/traefik/traefik/testhelpers"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/integration/try"
+	"github.com/pteich/traefik/provider/acme"
+	"github.com/pteich/traefik/testhelpers"
+	"github.com/pteich/traefik/types"
 	checker "github.com/vdemeester/shakers"
 )
 

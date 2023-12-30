@@ -1,17 +1,19 @@
 package eureka
 
 import (
-	"io/ioutil"
+	"context"
+	"io"
 	"time"
 
 	"github.com/ArthurHlt/go-eureka-client/eureka"
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/flaeg"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 // Provider holds configuration of the Provider provider.
@@ -23,14 +25,14 @@ type Provider struct {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
 // Provide allows the eureka provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
-	eureka.GetLogger().SetOutput(ioutil.Discard)
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+	eureka.GetLogger().SetOutput(io.Discard)
 
 	operation := func() error {
 		client := eureka.NewClient([]string{p.Endpoint})

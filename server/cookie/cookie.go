@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 const cookieNameLength = 6

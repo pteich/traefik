@@ -13,8 +13,8 @@ import (
 	"github.com/go-check/check"
 	d "github.com/libkermit/docker"
 	"github.com/libkermit/docker-check"
-	"github.com/traefik/traefik/integration/try"
-	"github.com/traefik/traefik/provider/label"
+	"github.com/pteich/traefik/integration/try"
+	"github.com/pteich/traefik/provider/label"
 	checker "github.com/vdemeester/shakers"
 )
 

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/containous/flaeg"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/types"
 )
 
 func TestParseErrorPages(t *testing.T) {

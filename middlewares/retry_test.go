@@ -10,9 +10,9 @@ import (
 	"testing"
 
 	"github.com/gorilla/websocket"
+	"github.com/pteich/traefik/testhelpers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/testhelpers"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/roundrobin"
 )

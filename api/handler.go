@@ -5,12 +5,12 @@ import (
 
 	"github.com/containous/mux"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/middlewares"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
+	"github.com/pteich/traefik/version"
 	thoas_stats "github.com/thoas/stats"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/middlewares"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
-	"github.com/traefik/traefik/version"
 	"github.com/unrolled/render"
 )
 

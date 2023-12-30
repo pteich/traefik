@@ -6,7 +6,7 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 	"github.com/urfave/negroni"
 )
 

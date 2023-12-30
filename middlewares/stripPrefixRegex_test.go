@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/pteich/traefik/testhelpers"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/testhelpers"
 )
 
 func TestStripPrefixRegex(t *testing.T) {

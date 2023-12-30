@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gambol99/go-marathon"
-	"github.com/traefik/traefik/provider/label"
+	"github.com/pteich/traefik/provider/label"
 )
 
 const testTaskName = "taskID"

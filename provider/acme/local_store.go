@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
 )
 
 var _ Store = (*LocalStore)(nil)

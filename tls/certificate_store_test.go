@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/patrickmn/go-cache"
+	"github.com/pteich/traefik/safe"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/traefik/traefik/safe"
 )
 
 func TestGetAllDomains(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/miekg/dns"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 type handler struct{}

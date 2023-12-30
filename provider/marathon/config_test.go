@@ -7,9 +7,9 @@ import (
 
 	"github.com/containous/flaeg"
 	"github.com/gambol99/go-marathon"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/types"
 )
 
 func TestGetConfigurationAPIErrors(t *testing.T) {

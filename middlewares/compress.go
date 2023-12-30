@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/NYTimes/gziphandler"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 // Compress is a middleware that allows redirection

@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/go-acme/lego/v4/challenge"
-	"github.com/traefik/traefik/cluster"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
+	"github.com/pteich/traefik/cluster"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
 )
 
 var _ challenge.ProviderTimeout = (*challengeHTTPProvider)(nil)

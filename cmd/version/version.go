@@ -8,7 +8,7 @@ import (
 	"text/template"
 
 	"github.com/containous/flaeg"
-	"github.com/traefik/traefik/version"
+	"github.com/pteich/traefik/version"
 )
 
 var versionTemplate = `Version:      {{.Version}}

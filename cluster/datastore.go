@@ -7,13 +7,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/abronan/valkeyrie/store"
-	"github.com/cenk/backoff"
-	"github.com/containous/staert"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/google/uuid"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
+	"github.com/kvtools/valkeyrie/store"
+	"github.com/pteich/staert"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
 )
 
 // Metadata stores Object plus metadata
@@ -67,30 +68,28 @@ func NewDataStore(ctx context.Context, kvSource staert.KvSource, object Object, 
 		localLock: &sync.RWMutex{},
 		listener:  listener,
 	}
-	err := datastore.watchChanges()
+	err := datastore.watchChanges(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return &datastore, nil
 }
 
-func (d *Datastore) watchChanges() error {
-	stopCh := make(chan struct{})
-	kvCh, err := d.kv.Watch(d.lockKey, stopCh, nil)
+func (d *Datastore) watchChanges(ctx context.Context) error {
+	kvCh, err := d.kv.Watch(ctx, d.lockKey, nil)
 	if err != nil {
 		return fmt.Errorf("error while watching key %s: %v", d.lockKey, err)
 	}
 	safe.Go(func() {
 		ctx, cancel := context.WithCancel(d.ctx)
+		defer cancel()
 		operation := func() error {
 			for {
 				select {
 				case <-ctx.Done():
-					stopCh <- struct{}{}
 					return nil
 				case _, ok := <-kvCh:
 					if !ok {
-						cancel()
 						return err
 					}
 					err = d.reload()
@@ -125,17 +124,18 @@ func (d *Datastore) reload() error {
 
 // Begin creates a transaction with the KV store.
 func (d *Datastore) Begin() (Transaction, Object, error) {
+	ctx, cancel := context.WithCancel(d.ctx)
+	defer cancel()
+
 	id := uuid.New().String()
 	log.Debugf("Transaction %s begins", id)
-	remoteLock, err := d.kv.NewLock(d.lockKey, &store.LockOptions{TTL: 20 * time.Second, Value: []byte(id)})
+	remoteLock, err := d.kv.NewLock(ctx, d.lockKey, &store.LockOptions{TTL: 20 * time.Second, Value: []byte(id)})
 	if err != nil {
 		return nil, nil, err
 	}
-	stopCh := make(chan struct{})
-	ctx, cancel := context.WithCancel(d.ctx)
 	var errLock error
 	go func() {
-		_, errLock = remoteLock.Lock(stopCh)
+		_, errLock = remoteLock.Lock(ctx)
 		cancel()
 	}()
 	select {
@@ -144,7 +144,6 @@ func (d *Datastore) Begin() (Transaction, Object, error) {
 			return nil, nil, errLock
 		}
 	case <-d.ctx.Done():
-		stopCh <- struct{}{}
 		return nil, nil, d.ctx.Err()
 	}
 
@@ -189,10 +188,13 @@ func (d *Datastore) Load() (Object, error) {
 	d.localLock.Lock()
 	defer d.localLock.Unlock()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	// clear Object first, as mapstructure's decoder doesn't have ZeroFields set to true for merging purposes
 	d.meta.Object = d.meta.Object[:0]
 
-	err := d.kv.LoadConfig(d.meta)
+	err := d.kv.LoadConfig(ctx, d.meta)
 	if err != nil {
 		return nil, err
 	}
@@ -221,6 +223,9 @@ type datastoreTransaction struct {
 
 // Commit allows to set an object in the KV store
 func (s *datastoreTransaction) Commit(object Object) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	s.localLock.Lock()
 	defer s.localLock.Unlock()
 	if s.dirty {
@@ -231,12 +236,12 @@ func (s *datastoreTransaction) Commit(object Object) error {
 	if err != nil {
 		return fmt.Errorf("marshall error: %s", err)
 	}
-	err = s.kv.StoreConfig(s.Datastore.meta)
+	err = s.kv.StoreConfig(ctx, s.Datastore.meta)
 	if err != nil {
 		return fmt.Errorf("StoreConfig error: %s", err)
 	}
 
-	err = s.remoteLock.Unlock()
+	err = s.remoteLock.Unlock(ctx)
 	if err != nil {
 		return fmt.Errorf("unlock error: %s", err)
 	}

@@ -8,9 +8,9 @@ import (
 	"text/template"
 
 	"github.com/hashicorp/consul/api"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/types"
 )
 
 // Deprecated

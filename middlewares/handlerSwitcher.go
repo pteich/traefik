@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/containous/mux"
-	"github.com/traefik/traefik/safe"
+	"github.com/pteich/traefik/safe"
 )
 
 // HandlerSwitcher allows hot switching of http.ServeMux

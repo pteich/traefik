@@ -1,20 +1,22 @@
 package marathon
 
 import (
+	"context"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/flaeg"
 	"github.com/gambol99/go-marathon"
 	"github.com/sirupsen/logrus"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
+
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 const (
@@ -73,13 +75,13 @@ type Basic struct {
 }
 
 // Init the provider
-func (p *Provider) Init(constraints types.Constraints) error {
+func (p *Provider) Init(_ context.Context, constraints types.Constraints) error {
 	return p.BaseProvider.Init(constraints)
 }
 
 // Provide allows the marathon provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(_ context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	operation := func() error {
 		config := marathon.NewDefaultConfig()
 		config.URL = p.Endpoint

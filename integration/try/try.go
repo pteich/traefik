@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 const (

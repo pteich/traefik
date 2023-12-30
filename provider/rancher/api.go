@@ -5,13 +5,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/mitchellh/mapstructure"
+	"github.com/pteich/traefik/job"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 	rancher "github.com/rancher/go-rancher/v2"
-	"github.com/traefik/traefik/job"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
 )
 
 const (

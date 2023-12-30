@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/mitchellh/hashstructure"
-	"github.com/traefik/traefik/anonymize"
-	"github.com/traefik/traefik/configuration"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/version"
+	"github.com/pteich/traefik/anonymize"
+	"github.com/pteich/traefik/configuration"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/version"
 )
 
 // collectorURL URL where the stats are send

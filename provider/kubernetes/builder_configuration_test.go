@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/containous/flaeg"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
 )
 
 func buildConfiguration(opts ...func(*types.Configuration)) *types.Configuration {

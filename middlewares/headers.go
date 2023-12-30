@@ -5,7 +5,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/types"
 )
 
 // HeaderOptions is a struct for specifying configuration options for the headers middleware.

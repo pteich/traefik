@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 package server
@@ -6,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 func (s *Server) configureSignals() {

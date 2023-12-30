@@ -16,10 +16,9 @@ import (
 	"time"
 
 	"github.com/BurntSushi/ty/fun"
-	"github.com/cenk/backoff"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/containous/flaeg"
 	"github.com/containous/mux"
-	"github.com/containous/staert"
 	"github.com/eapache/channels"
 	"github.com/go-acme/lego/v4/certificate"
 	"github.com/go-acme/lego/v4/challenge"
@@ -29,13 +28,15 @@ import (
 	legolog "github.com/go-acme/lego/v4/log"
 	"github.com/go-acme/lego/v4/providers/dns"
 	"github.com/go-acme/lego/v4/registration"
+	"github.com/pteich/staert"
 	"github.com/sirupsen/logrus"
-	"github.com/traefik/traefik/cluster"
-	"github.com/traefik/traefik/log"
-	acmeprovider "github.com/traefik/traefik/provider/acme"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
-	"github.com/traefik/traefik/version"
+
+	"github.com/pteich/traefik/cluster"
+	"github.com/pteich/traefik/log"
+	acmeprovider "github.com/pteich/traefik/provider/acme"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
+	"github.com/pteich/traefik/version"
 )
 
 var (

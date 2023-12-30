@@ -7,13 +7,14 @@ import (
 	stdlog "log"
 	"os"
 
-	"github.com/abronan/valkeyrie/store"
 	"github.com/containous/flaeg"
-	"github.com/containous/staert"
-	"github.com/traefik/traefik/acme"
-	"github.com/traefik/traefik/cluster"
-	"github.com/traefik/traefik/cmd"
-	"github.com/traefik/traefik/log"
+	"github.com/kvtools/valkeyrie/store"
+	"github.com/pteich/staert"
+
+	"github.com/pteich/traefik/acme"
+	"github.com/pteich/traefik/cluster"
+	"github.com/pteich/traefik/cmd"
+	"github.com/pteich/traefik/log"
 )
 
 // NewCmd builds a new StoreConfig command

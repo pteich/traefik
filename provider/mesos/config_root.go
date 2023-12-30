@@ -2,7 +2,7 @@ package mesos
 
 import (
 	"github.com/mesosphere/mesos-dns/records/state"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/types"
 )
 
 func (p *Provider) buildConfiguration(tasks []state.Task) *types.Configuration {

@@ -11,8 +11,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/go-check/check"
-	"github.com/traefik/traefik/integration/try"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/integration/try"
+	"github.com/pteich/traefik/types"
 	checker "github.com/vdemeester/shakers"
 )
 

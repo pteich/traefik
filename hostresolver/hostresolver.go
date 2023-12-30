@@ -9,7 +9,7 @@ import (
 
 	"github.com/miekg/dns"
 	"github.com/patrickmn/go-cache"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 type cnameResolv struct {

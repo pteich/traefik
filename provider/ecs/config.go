@@ -11,10 +11,10 @@ import (
 
 	"github.com/BurntSushi/ty/fun"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/types"
 )
 
 // buildConfiguration fills the config template with the given instances

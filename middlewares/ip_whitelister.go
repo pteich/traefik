@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/middlewares/tracing"
-	"github.com/traefik/traefik/whitelist"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/middlewares/tracing"
+	"github.com/pteich/traefik/whitelist"
 	"github.com/urfave/negroni"
 )
 

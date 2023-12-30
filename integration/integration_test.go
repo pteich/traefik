@@ -15,7 +15,7 @@ import (
 
 	"github.com/go-check/check"
 	compose "github.com/libkermit/compose/check"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 	checker "github.com/vdemeester/shakers"
 )
 

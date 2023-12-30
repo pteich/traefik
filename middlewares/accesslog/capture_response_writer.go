@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/traefik/traefik/middlewares"
+	"github.com/pteich/traefik/middlewares"
 )
 
 var (

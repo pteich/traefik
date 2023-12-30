@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/containous/mux"
-	"github.com/traefik/traefik/hostresolver"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/middlewares"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/hostresolver"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/middlewares"
+	"github.com/pteich/traefik/types"
 )
 
 // Rules holds rule parsing and configuration

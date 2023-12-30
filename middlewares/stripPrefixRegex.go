@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/containous/mux"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 )
 
 // StripPrefixRegex is a middleware used to strip prefix from an URL request

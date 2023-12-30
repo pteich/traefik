@@ -1,6 +1,8 @@
 package kv
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"math"
 	"net/http"
@@ -10,12 +12,14 @@ import (
 	"text/template"
 
 	"github.com/BurntSushi/ty/fun"
-	"github.com/abronan/valkeyrie/store"
 	"github.com/containous/flaeg"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/tls"
-	"github.com/traefik/traefik/types"
+	"github.com/kvtools/etcdv3"
+	"github.com/kvtools/valkeyrie/store"
+
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/tls"
+	"github.com/pteich/traefik/types"
 )
 
 func (p *Provider) buildConfiguration() (*types.Configuration, error) {
@@ -578,7 +582,7 @@ func (p *Provider) listServers(backend string) []string {
 
 func (p *Provider) serverFilter(serverName string) bool {
 	key := fmt.Sprint(serverName, pathBackendServerURL)
-	if _, err := p.kvClient.Get(key, nil); err != nil {
+	if _, err := p.kvClient.Get(context.Background(), key, nil); err != nil {
 		log.Errorf("Failed to retrieve value for key %s: %s", key, err)
 		checkError(err)
 
@@ -589,7 +593,7 @@ func (p *Provider) serverFilter(serverName string) bool {
 
 func (p *Provider) checkConstraints(keys ...string) bool {
 	joinedKeys := strings.Join(keys, "")
-	keyPair, err := p.kvClient.Get(joinedKeys, nil)
+	keyPair, err := p.kvClient.Get(context.Background(), joinedKeys, nil)
 	if err != nil {
 		checkError(err)
 	}
@@ -637,11 +641,11 @@ func (p *Provider) getFuncList(key string) func(rootPath string) []string {
 func (p *Provider) get(defaultValue string, keyParts ...string) string {
 	key := strings.Join(keyParts, "")
 
-	if p.storeType == store.ETCD {
+	if p.storeType == etcdv3.StoreName {
 		key = strings.TrimPrefix(key, pathSeparator)
 	}
 
-	keyPair, err := p.kvClient.Get(key, nil)
+	keyPair, err := p.kvClient.Get(context.Background(), key, nil)
 	if err != nil || keyPair == nil {
 		log.Debugf("Cannot get key %s %s", key, err)
 		checkError(err)
@@ -679,7 +683,7 @@ func (p *Provider) hasPrefix(keyParts ...string) bool {
 		baseKey += "/"
 	}
 
-	listKeys, err := p.kvClient.List(baseKey, nil)
+	listKeys, err := p.kvClient.List(context.Background(), baseKey, nil)
 	if err != nil {
 		log.Debugf("Cannot list keys under %q: %v", baseKey, err)
 		checkError(err)
@@ -723,7 +727,7 @@ func (p *Provider) getInt64(defaultValue int64, keyParts ...string) int64 {
 func (p *Provider) list(keyParts ...string) []string {
 	rootKey := strings.Join(keyParts, "")
 
-	keysPairs, err := p.kvClient.List(rootKey, nil)
+	keysPairs, err := p.kvClient.List(context.Background(), rootKey, nil)
 	if err != nil {
 		log.Debugf("Cannot list keys under %q: %v", rootKey, err)
 		checkError(err)
@@ -800,7 +804,7 @@ func (p *Provider) getMap(keyParts ...string) map[string]string {
 }
 
 func checkError(err error) {
-	if err != nil && err != store.ErrKeyNotFound {
+	if err != nil && !errors.Is(err, store.ErrKeyNotFound) {
 		panic(err)
 	}
 }

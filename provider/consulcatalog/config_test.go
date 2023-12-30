@@ -7,9 +7,9 @@ import (
 
 	"github.com/containous/flaeg"
 	"github.com/hashicorp/consul/api"
+	"github.com/pteich/traefik/provider/label"
+	"github.com/pteich/traefik/types"
 	"github.com/stretchr/testify/assert"
-	"github.com/traefik/traefik/provider/label"
-	"github.com/traefik/traefik/types"
 )
 
 func TestProviderBuildConfiguration(t *testing.T) {

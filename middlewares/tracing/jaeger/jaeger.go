@@ -4,7 +4,7 @@ import (
 	"io"
 
 	"github.com/opentracing/opentracing-go"
-	"github.com/traefik/traefik/log"
+	"github.com/pteich/traefik/log"
 	"github.com/uber/jaeger-client-go"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	jaegermet "github.com/uber/jaeger-lib/metrics"

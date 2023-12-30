@@ -10,15 +10,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/abronan/valkeyrie"
-	"github.com/abronan/valkeyrie/store"
-	"github.com/abronan/valkeyrie/store/consul"
-	"github.com/containous/staert"
 	"github.com/go-check/check"
-	"github.com/traefik/traefik/cluster"
-	"github.com/traefik/traefik/integration/try"
-	"github.com/traefik/traefik/types"
+	"github.com/kvtools/consul"
+	"github.com/kvtools/valkeyrie"
+	"github.com/kvtools/valkeyrie/store"
+	"github.com/pteich/staert"
 	checker "github.com/vdemeester/shakers"
+
+	"github.com/pteich/traefik/cluster"
+	"github.com/pteich/traefik/integration/try"
+	"github.com/pteich/traefik/types"
 )
 
 // Consul test suites (using libcompose)
@@ -31,11 +32,10 @@ func (s *ConsulSuite) setupConsul(c *check.C) {
 	s.createComposeProject(c, "consul")
 	s.composeProject.Start(c)
 
-	consul.Register()
-	kv, err := valkeyrie.NewStore(
-		store.CONSUL,
+	kv, err := valkeyrie.NewStore(context.Background(),
+		consul.StoreName,
 		[]string{s.composeProject.Container(c, "consul").NetworkSettings.IPAddress + ":8500"},
-		&store.Config{
+		&consul.Config{
 			ConnectionTimeout: 10 * time.Second,
 		},
 	)
@@ -53,7 +53,6 @@ func (s *ConsulSuite) setupConsulTLS(c *check.C) {
 	s.createComposeProject(c, "consul_tls")
 	s.composeProject.Start(c)
 
-	consul.Register()
 	clientTLS := &types.ClientTLS{
 		CA:                 "resources/tls/ca.cert",
 		Cert:               "resources/tls/consul.cert",
@@ -63,10 +62,10 @@ func (s *ConsulSuite) setupConsulTLS(c *check.C) {
 	TLSConfig, err := clientTLS.CreateTLSConfig()
 	c.Assert(err, checker.IsNil)
 
-	kv, err := valkeyrie.NewStore(
-		store.CONSUL,
+	kv, err := valkeyrie.NewStore(context.Background(),
+		consul.StoreName,
 		[]string{s.composeProject.Container(c, "consul").NetworkSettings.IPAddress + ":8585"},
-		&store.Config{
+		&consul.Config{
 			ConnectionTimeout: 10 * time.Second,
 			TLS:               TLSConfig,
 		},
@@ -152,19 +151,19 @@ func (s *ConsulSuite) TestNominalConfiguration(c *check.C) {
 		"traefik/frontends/frontend2/routes/test_2/rule": "Path:/test",
 	}
 	for key, value := range backend1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range backend2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range frontend1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range frontend2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 
@@ -208,7 +207,7 @@ func (s *ConsulSuite) TestNominalConfiguration(c *check.C) {
 func (s *ConsulSuite) TestGlobalConfiguration(c *check.C) {
 	s.setupConsul(c)
 	consulHost := s.composeProject.Container(c, "consul").NetworkSettings.IPAddress
-	err := s.kv.Put("traefik/entrypoints/http/address", []byte(":8001"), nil)
+	err := s.kv.Put(context.Background(), "traefik/entrypoints/http/address", []byte(":8001"), nil)
 	c.Assert(err, checker.IsNil)
 
 	// wait for consul
@@ -258,19 +257,19 @@ func (s *ConsulSuite) TestGlobalConfiguration(c *check.C) {
 		"traefik/frontends/frontend2/routes/test_2/rule": "Path:/test",
 	}
 	for key, value := range backend1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range backend2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range frontend1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range frontend2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 
@@ -318,7 +317,7 @@ func (s *ConsulSuite) TestCommandStoreConfig(c *check.C) {
 	for key, value := range expectedData {
 		var p *store.KVPair
 		err = try.Do(60*time.Second, func() error {
-			p, err = s.kv.Get(key, nil)
+			p, err = s.kv.Get(context.Background(), key, nil)
 			return err
 		})
 		c.Assert(err, checker.IsNil)
@@ -353,7 +352,7 @@ func (s *ConsulSuite) TestCommandStoreConfigWithFile(c *check.C) {
 	for key, value := range expectedData {
 		var p *store.KVPair
 		err = try.Do(10*time.Second, func() error {
-			p, err = s.kv.Get(key, nil)
+			p, err = s.kv.Get(context.Background(), key, nil)
 			return err
 		})
 		c.Assert(err, checker.IsNil)
@@ -366,7 +365,7 @@ func (s *ConsulSuite) TestCommandStoreConfigWithFile(c *check.C) {
 
 	for _, value := range checkNotExistsMap {
 		err = try.Do(10*time.Second, func() error {
-			if exists, err := s.kv.Exists(value, nil); err == nil && exists {
+			if exists, err := s.kv.Exists(context.Background(), value, nil); err == nil && exists {
 				return fmt.Errorf("%s key is not suppose to exist in KV", value)
 			}
 			return nil
@@ -383,9 +382,13 @@ type TestStruct struct {
 func (s *ConsulSuite) TestDatastore(c *check.C) {
 	s.setupConsul(c)
 	consulHost := s.composeProject.Container(c, "consul").NetworkSettings.IPAddress
-	kvSource, err := staert.NewKvSource(store.CONSUL, []string{consulHost + ":8500"}, &store.Config{
+
+	cs, err := consul.New(context.Background(), []string{consulHost + ":8500"}, &consul.Config{
 		ConnectionTimeout: 10 * time.Second,
-	}, "traefik")
+	})
+	c.Assert(err, checker.IsNil)
+
+	kvSource, err := staert.NewKvSource(cs, "traefik")
 	c.Assert(err, checker.IsNil)
 
 	ctx := context.Background()
@@ -544,23 +547,23 @@ func (s *ConsulSuite) TestSNIDynamicTlsConfig(c *check.C) {
 
 	// config backends,frontends and first tls keypair
 	for key, value := range backend1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range backend2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range frontend1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range frontend2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 	for key, value := range tlsconfigure1 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 
@@ -580,7 +583,7 @@ func (s *ConsulSuite) TestSNIDynamicTlsConfig(c *check.C) {
 
 	// wait for consul
 	err = try.Do(60*time.Second, func() error {
-		_, err := s.kv.Get("traefik/tls/snitestcom/certificate/keyfile", nil)
+		_, err := s.kv.Get(context.Background(), "traefik/tls/snitestcom/certificate/keyfile", nil)
 		return err
 	})
 	c.Assert(err, checker.IsNil)
@@ -596,13 +599,13 @@ func (s *ConsulSuite) TestSNIDynamicTlsConfig(c *check.C) {
 
 	// now we configure the second keypair in consul and the request for host "snitest.org" will use the second keypair
 	for key, value := range tlsconfigure2 {
-		err := s.kv.Put(key, []byte(value), nil)
+		err := s.kv.Put(context.Background(), key, []byte(value), nil)
 		c.Assert(err, checker.IsNil)
 	}
 
 	// wait for consul
 	err = try.Do(60*time.Second, func() error {
-		_, err := s.kv.Get("traefik/tls/snitestorg/certificate/keyfile", nil)
+		_, err := s.kv.Get(context.Background(), "traefik/tls/snitestorg/certificate/keyfile", nil)
 		return err
 	})
 	c.Assert(err, checker.IsNil)

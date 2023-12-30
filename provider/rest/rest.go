@@ -1,16 +1,18 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/containous/mux"
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/safe"
-	"github.com/traefik/traefik/types"
 	"github.com/unrolled/render"
+
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/safe"
+	"github.com/pteich/traefik/types"
 )
 
 // Provider is a provider.Provider implementation that provides a Rest API
@@ -22,7 +24,7 @@ type Provider struct {
 var templatesRenderer = render.New(render.Options{Directory: "nowhere"})
 
 // Init the provider
-func (p *Provider) Init(_ types.Constraints) error {
+func (p *Provider) Init(ctx context.Context, _ types.Constraints) error {
 	return nil
 }
 
@@ -62,7 +64,7 @@ func (p *Provider) AddRoutes(systemRouter *mux.Router) {
 
 // Provide allows the provider to provide configurations to traefik
 // using the given configuration channel.
-func (p *Provider) Provide(configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
+func (p *Provider) Provide(ctx context.Context, configurationChan chan<- types.ConfigMessage, pool *safe.Pool) error {
 	p.configurationChan = configurationChan
 	return nil
 }

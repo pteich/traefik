@@ -8,11 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/abronan/valkeyrie"
-	"github.com/abronan/valkeyrie/store"
-	etcdv3 "github.com/abronan/valkeyrie/store/etcd/v3"
 	"github.com/go-check/check"
-	"github.com/traefik/traefik/integration/try"
+	"github.com/kvtools/etcdv3"
+	"github.com/kvtools/valkeyrie"
+	"github.com/kvtools/valkeyrie/store"
+
+	"github.com/pteich/traefik/integration/try"
 
 	checker "github.com/vdemeester/shakers"
 )

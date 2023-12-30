@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/types"
+	"github.com/pteich/traefik/log"
+	"github.com/pteich/traefik/types"
 )
 
 const (

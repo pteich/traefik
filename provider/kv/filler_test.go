@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/abronan/valkeyrie/store"
+	"github.com/kvtools/valkeyrie/store"
 	"github.com/stretchr/testify/assert"
 )
 
