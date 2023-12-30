@@ -1,3 +1,12 @@
+## Disclaimer // Attention
+
+This is a fork of github.com/traefik/traefik with a new default branch `traefik1-refresh` that
+contains a working version with updated dependencies that can be built with a recent Go version
+and packaged in an updated Docker container.
+
+This is mainly for my own personal needs as I have to stick with an old version of Traefik for 
+various reasons.
+
 
 <p align="center">
 <img src="docs/img/traefik.logo.png" alt="Traefik" title="Traefik" />
