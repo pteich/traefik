@@ -7,6 +7,8 @@ and packaged in an updated Docker container.
 This is mainly for my own personal needs as I have to stick with an old version of Traefik for 
 various reasons.
 
+Integration tests have been removed because dependent libraries are no longer maintained. 
+
 
 <p align="center">
 <img src="docs/img/traefik.logo.png" alt="Traefik" title="Traefik" />
