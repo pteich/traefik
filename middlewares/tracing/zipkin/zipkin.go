@@ -4,7 +4,10 @@ import (
 	"io"
 
 	"github.com/opentracing/opentracing-go"
-	zipkin "github.com/openzipkin-contrib/zipkin-go-opentracing"
+	zipkinot "github.com/openzipkin-contrib/zipkin-go-opentracing"
+	"github.com/openzipkin/zipkin-go"
+	zipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
+
 	"github.com/pteich/traefik/log"
 )
 
@@ -21,26 +24,27 @@ type Config struct {
 
 // Setup sets up the tracer
 func (c *Config) Setup(serviceName string) (opentracing.Tracer, io.Closer, error) {
-	collector, err := zipkin.NewHTTPCollector(c.HTTPEndpoint)
+	reporter := zipkinhttp.NewReporter(c.HTTPEndpoint)
+
+	endpoint, err := zipkin.NewEndpoint(serviceName, "0.0.0.0:0")
 	if err != nil {
 		return nil, nil, err
 	}
-	recorder := zipkin.NewRecorder(collector, c.Debug, "0.0.0.0:0", serviceName)
-	tracer, err := zipkin.NewTracer(
-		recorder,
-		zipkin.ClientServerSameSpan(c.SameSpan),
-		zipkin.TraceID128Bit(c.ID128Bit),
-		zipkin.DebugMode(c.Debug),
+
+	nativeTracer, err := zipkin.NewTracer(reporter,
+		zipkin.WithLocalEndpoint(endpoint),
+		zipkin.WithSharedSpans(c.SameSpan),
+		zipkin.WithTraceID128Bit(c.ID128Bit),
 	)
-
 	if err != nil {
 		return nil, nil, err
 	}
 
+	tracer := zipkinot.Wrap(nativeTracer)
 	// Without this, child spans are getting the NOOP tracer
 	opentracing.SetGlobalTracer(tracer)
 
 	log.Debug("Zipkin tracer configured")
 
-	return tracer, collector, nil
+	return tracer, reporter, nil
 }

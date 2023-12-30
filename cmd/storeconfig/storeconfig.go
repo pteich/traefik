@@ -1,9 +1,11 @@
 package storeconfig
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	stdlog "log"
 	"os"
 
@@ -51,7 +53,7 @@ func Run(kv *staert.KvSource, traefikConfiguration *cmd.TraefikConfiguration) fu
 		}
 		stdlog.Printf("Storing configuration: %s\n", jsonConf)
 
-		err = kv.StoreConfig(traefikConfiguration.GlobalConfiguration)
+		err = kv.StoreConfig(context.Background(), traefikConfiguration.GlobalConfiguration)
 		if err != nil {
 			return err
 		}
@@ -69,7 +71,7 @@ func Run(kv *staert.KvSource, traefikConfiguration *cmd.TraefikConfiguration) fu
 			}
 
 			stdlog.Print("Writing config to KV")
-			err = kv.StoreConfig(config)
+			err = kv.StoreConfig(context.Background(), config)
 			if err != nil {
 				return err
 			}
@@ -87,7 +89,7 @@ func Run(kv *staert.KvSource, traefikConfiguration *cmd.TraefikConfiguration) fu
 			}
 
 			accountInitialized, err := keyExists(kv, traefikConfiguration.GlobalConfiguration.ACME.Storage)
-			if err != nil && err != store.ErrKeyNotFound {
+			if err != nil && !errors.Is(err, store.ErrKeyNotFound) {
 				return err
 			}
 
@@ -107,21 +109,21 @@ func Run(kv *staert.KvSource, traefikConfiguration *cmd.TraefikConfiguration) fu
 					Prefix: traefikConfiguration.GlobalConfiguration.ACME.Storage,
 				}
 
-				err = source.StoreConfig(meta)
+				err = source.StoreConfig(context.Background(), meta)
 				if err != nil {
 					return err
 				}
 			}
 
 			// Force to delete storagefile
-			return kv.Delete(kv.Prefix + "/acme/storagefile")
+			return kv.Delete(context.Background(), kv.Prefix+"/acme/storagefile")
 		}
 		return nil
 	}
 }
 
 func keyExists(source *staert.KvSource, key string) (bool, error) {
-	list, err := source.List(key, nil)
+	list, err := source.List(context.Background(), key, nil)
 	if err != nil {
 		return false, err
 	}
@@ -138,7 +140,7 @@ func migrateACMEData(fileName string) (*acme.Account, error) {
 	}
 	defer f.Close()
 
-	file, err := ioutil.ReadAll(f)
+	file, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
@@ -184,25 +186,25 @@ func CreateKvSource(traefikConfiguration *cmd.TraefikConfiguration) (*staert.KvS
 
 	switch {
 	case traefikConfiguration.Consul != nil:
-		kvStore, err = traefikConfiguration.Consul.CreateStore()
+		kvStore, err = traefikConfiguration.Consul.CreateStore(context.Background())
 		kv = &staert.KvSource{
 			Store:  kvStore,
 			Prefix: traefikConfiguration.Consul.Prefix,
 		}
 	case traefikConfiguration.Etcd != nil:
-		kvStore, err = traefikConfiguration.Etcd.CreateStore()
+		kvStore, err = traefikConfiguration.Etcd.CreateStore(context.Background())
 		kv = &staert.KvSource{
 			Store:  kvStore,
 			Prefix: traefikConfiguration.Etcd.Prefix,
 		}
 	case traefikConfiguration.Zookeeper != nil:
-		kvStore, err = traefikConfiguration.Zookeeper.CreateStore()
+		kvStore, err = traefikConfiguration.Zookeeper.CreateStore(context.Background())
 		kv = &staert.KvSource{
 			Store:  kvStore,
 			Prefix: traefikConfiguration.Zookeeper.Prefix,
 		}
 	case traefikConfiguration.Boltdb != nil:
-		kvStore, err = traefikConfiguration.Boltdb.CreateStore()
+		kvStore, err = traefikConfiguration.Boltdb.CreateStore(context.Background())
 		kv = &staert.KvSource{
 			Store:  kvStore,
 			Prefix: traefikConfiguration.Boltdb.Prefix,

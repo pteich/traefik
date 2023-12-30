@@ -4,8 +4,9 @@ import (
 	"time"
 
 	"github.com/containous/flaeg"
-	servicefabric "github.com/containous/traefik-extra-service-fabric"
 	sf "github.com/jjcollinge/servicefabric"
+	servicefabric "github.com/pteich/traefik-extra-service-fabric"
+
 	"github.com/pteich/traefik/api"
 	"github.com/pteich/traefik/configuration"
 	"github.com/pteich/traefik/middlewares/accesslog"

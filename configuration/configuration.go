@@ -7,8 +7,10 @@ import (
 	"time"
 
 	"github.com/containous/flaeg"
-	servicefabric "github.com/containous/traefik-extra-service-fabric"
 	"github.com/go-acme/lego/v4/challenge/dns01"
+	servicefabric "github.com/pteich/traefik-extra-service-fabric"
+	jaegercli "github.com/uber/jaeger-client-go"
+
 	"github.com/pteich/traefik/acme"
 	"github.com/pteich/traefik/api"
 	"github.com/pteich/traefik/log"
@@ -35,7 +37,6 @@ import (
 	"github.com/pteich/traefik/provider/zk"
 	"github.com/pteich/traefik/tls"
 	"github.com/pteich/traefik/types"
-	jaegercli "github.com/uber/jaeger-client-go"
 )
 
 const (

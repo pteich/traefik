@@ -20,6 +20,9 @@ import (
 	"github.com/armon/go-proxyproto"
 	"github.com/containous/mux"
 	"github.com/go-acme/lego/v4/challenge/tlsalpn01"
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/negroni"
+
 	"github.com/pteich/traefik/cluster"
 	"github.com/pteich/traefik/configuration"
 	"github.com/pteich/traefik/configuration/router"
@@ -34,8 +37,6 @@ import (
 	traefiktls "github.com/pteich/traefik/tls"
 	"github.com/pteich/traefik/types"
 	"github.com/pteich/traefik/whitelist"
-	"github.com/sirupsen/logrus"
-	"github.com/urfave/negroni"
 )
 
 var httpServerLogger = stdlog.New(log.WriterLevel(logrus.DebugLevel), "", 0)
@@ -423,7 +424,7 @@ func (s *Server) startProvider() {
 	log.Infof("Starting provider %T %s", s.provider, jsonConf)
 	currentProvider := s.provider
 	safe.Go(func() {
-		err := currentProvider.Provide(s.configurationChan, s.routinesPool)
+		err := currentProvider.Provide(context.Background(), s.configurationChan, s.routinesPool)
 		if err != nil {
 			log.Errorf("Error starting provider %T: %s", s.provider, err)
 		}

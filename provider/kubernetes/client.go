@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/pteich/traefik/log"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	kubeerror "k8s.io/apimachinery/pkg/api/errors"
@@ -17,6 +16,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
+
+	"github.com/pteich/traefik/log"
 )
 
 const resyncPeriod = 10 * time.Minute
@@ -191,7 +192,10 @@ func (c *clientImpl) UpdateIngressStatus(namespace, name, ip, hostname string) e
 		}
 	}
 	ingCopy := ing.DeepCopy()
-	ingCopy.Status = extensionsv1beta1.IngressStatus{LoadBalancer: corev1.LoadBalancerStatus{Ingress: []corev1.LoadBalancerIngress{{IP: ip, Hostname: hostname}}}}
+
+	ingCopy.Status = extensionsv1beta1.IngressStatus{
+		LoadBalancer: extensionsv1beta1.IngressLoadBalancerStatus{Ingress: []extensionsv1beta1.IngressLoadBalancerIngress{{IP: ip, Hostname: hostname}}},
+	}
 
 	_, err = c.clientset.ExtensionsV1beta1().Ingresses(ingCopy.Namespace).UpdateStatus(context.Background(), ingCopy, metav1.UpdateOptions{})
 	if err != nil {
