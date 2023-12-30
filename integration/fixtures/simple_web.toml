@@ -1,8 +1,0 @@
-logLevel = "DEBUG"
-defaultEntryPoints = ["http"]
-
-[entryPoints]
-  [entryPoints.http]
-  address = ":8000"
-
-[api]
