@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -35,7 +35,7 @@ jobs:
           tar czvf webui.tar.gz ./static/
 
       - name: Artifact webui
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: webui.tar.gz
           path: webui.tar.gz
@@ -50,18 +50,18 @@ jobs:
 
     steps:
       - name: Set up Go ${{ env.GO_VERSION }}
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: go/src/github.com/pteich/traefik
           fetch-depth: 0
 
       - name: Cache Go modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/go/pkg/mod
@@ -72,7 +72,7 @@ jobs:
           restore-keys: ${{ runner.os }}-build-go-
 
       - name: Artifact webui
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: webui.tar.gz
           path: ${{ github.workspace }}/go/src/github.com/pteich/traefik
