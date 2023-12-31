@@ -80,17 +80,17 @@ jobs:
       - name: Untar webui
         run: tar xvf webui.tar.gz
 
-      - name: Build for darwin
-        env:
-          DOCKER_RUN_TRAEFIK: ""
-        run: GOOS=darwin GOARCH=amd64 make binary
+#      - name: Build for darwin
+#        env:
+#          DOCKER_RUN_TRAEFIK: ""
+#        run: GOOS=darwin GOARCH=amd64 make binary
 
       - name: Build for linux
         env:
           DOCKER_RUN_TRAEFIK: ""
         run: GOOS=linux GOARCH=amd64 make binary
 
-      - name: Build for windows
-        env:
-          DOCKER_RUN_TRAEFIK: ""
-        run: GOOS=windows GOARCH=amd64 make binary
+#      - name: Build for windows
+#        env:
+#          DOCKER_RUN_TRAEFIK: ""
+#        run: GOOS=windows GOARCH=amd64 make binary
