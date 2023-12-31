@@ -1,5 +1,5 @@
 # WEBUI
-FROM node:8.15.0 as webui
+FROM node:9 as webui
 
 ENV WEBUI_DIR /src/webui
 RUN mkdir -p $WEBUI_DIR
@@ -12,16 +12,16 @@ RUN yarn install
 RUN npm run build
 
 # BUILD
-FROM golang:1.16-alpine as gobuild
+FROM golang:1.21-alpine as gobuild
 
 RUN apk --update upgrade \
     && apk --no-cache --no-progress add git mercurial bash gcc musl-dev curl tar ca-certificates tzdata \
     && update-ca-certificates \
     && rm -rf /var/cache/apk/*
 
-RUN mkdir -p /usr/local/bin \
-    && curl -fsSL -o /usr/local/bin/go-bindata https://github.com/containous/go-bindata/releases/download/v1.0.0/go-bindata \
-    && chmod +x /usr/local/bin/go-bindata
+#RUN mkdir -p /usr/local/bin \
+#    && curl -fsSL -o /usr/local/bin/go-bindata https://github.com/containous/go-bindata/releases/download/v1.0.0/go-bindata \
+#    && chmod +x /usr/local/bin/go-bindata
 
 WORKDIR /go/src/github.com/traefik/traefik
 
